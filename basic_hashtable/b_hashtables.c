@@ -85,6 +85,16 @@ BasicHashTable *create_hash_table(int capacity)
  ****/
 void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 {
+  int hash_func = hash(key, ht->capacity);
+  if (ht->storage[hash_func] != NULL)
+  {
+    fprintf(stderr, "Index already used");
+    exit(1);
+  }
+  ht->storage[hash_func] = create_pair(key, value);
+
+  return;
+
 
 }
 
@@ -125,7 +135,7 @@ int main(void)
 {
   struct BasicHashTable *ht = create_hash_table(16);
 
-  // hash_table_insert(ht, "line", "Here today...\n");
+  hash_table_insert(ht, "line", "Here today...\n");
 
   // printf("%s", hash_table_retrieve(ht, "line"));
 
