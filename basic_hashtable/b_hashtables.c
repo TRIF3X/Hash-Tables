@@ -71,7 +71,7 @@ unsigned int hash(char *str, int max)
 BasicHashTable *create_hash_table(int capacity)
 {
   BasicHashTable *ht;
-
+  //init
   return ht;
 }
 
