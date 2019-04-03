@@ -89,7 +89,6 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
   if (ht->storage[hash_func] != NULL)
   {
     fprintf(stderr, "Index already used");
-    exit(1);
   }
   ht->storage[hash_func] = create_pair(key, value);
 
@@ -105,7 +104,14 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
  ****/
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
-
+  int hash_func = hash(key, ht->capacity);
+  if (ht->storage[hash_func] != NULL)
+  {
+    free(ht->storage[hash_func]->key);
+    free(ht->storage[hash_func]->value);
+    free(ht->storage[hash_func]);
+    ht->storage[hash_func] = NULL;
+  }
 }
 
 /****
@@ -118,7 +124,7 @@ char *hash_table_retrieve(BasicHashTable *ht, char *key)
   int hash_func = hash(key, ht->capacity);
   if (ht->storage[hash_func]) 
   {
-    return ht->storage[hash_func];
+    return ht->storage[hash_func]->value;
   }
   return NULL;
 }
@@ -130,6 +136,13 @@ char *hash_table_retrieve(BasicHashTable *ht, char *key)
  ****/
 void destroy_hash_table(BasicHashTable *ht)
 {
+
+  for(int i = 0; i < ht->capacity; i++) {
+    if(ht->storage[i] != NULL) {
+      hash_table_remove(ht, ht->storage[i]);
+    }
+  }
+
   free(ht->storage);
   free(ht);
 }
