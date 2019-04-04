@@ -92,19 +92,24 @@ void hash_table_insert(HashTable *ht, char *key, char *value)
 {
   int hash_func = hash(key, ht->capacity);
 
-  if (ht->storage[hash_func] != NULL)
-  {
-    if (ht->storage[hash_func]->next == NULL)
-    {
-      ht->storage[hash_func]->next = create_pair(key, value);
-    }
-  }
+  LinkedPair *current = ht->storage[hash_func];
+  LinkedPair *previous;
 
-  if (ht->storage[hash_func] == NULL)
+  while (current != NULL && strcmp(current->key, key) != 0) 
   {
-    ht->storage[hash_func] = create_pair(key, value);
+    previous = current;
+    current = previous->next;
   }
-
+  if (current != NULL) 
+  {
+    current->value = value;
+  } 
+  else 
+  {
+    LinkedPair *new_pair = create_pair(key, value);
+    new_pair->next = ht->storage[hash_func];
+    ht->storage[hash_func] = new_pair;
+  }
 }
 
 /*
@@ -131,22 +136,34 @@ void hash_table_remove(HashTable *ht, char *key)
 char *hash_table_retrieve(HashTable *ht, char *key)
 {
   int hash_func = hash(key, ht->capacity);
-  if (ht->storage[hash_func])
-  {
-    LinkedPair *new_pair = ht->storage[hash_func];
+  LinkedPair *current = ht->storage[hash_func];
+  LinkedPair *previous;
 
-    while(1) 
-    {
-      if (strcmp(new_pair->key, key) == 0 )
-      {
-        return new_pair->value;
-      }
-      new_pair = new_pair->next;
-    }
+  if (current == NULL)
+  {
+    return NULL;
+  }
+  
+  if (strcmp(current->key, key) == 0) 
+  {
+    return current->value;
   }
   else
   {
-    return NULL;
+    while (current != NULL && strcmp(current->key, key) != 0)
+    {
+      previous = current;
+      current = previous->next;
+    }
+    if (strcmp(current->key, key) == 0)
+    {
+      return current->value;
+    }
+    else
+    {
+      return NULL;
+    }
+    
   }
 }
 
