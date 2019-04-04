@@ -105,6 +105,7 @@ void hash_table_insert(BasicHashTable *ht, char *key, char *value)
 void hash_table_remove(BasicHashTable *ht, char *key)
 {
   int hash_func = hash(key, ht->capacity);
+
   if (ht->storage[hash_func] != NULL)
   {
     free(ht->storage[hash_func]->key);
@@ -112,6 +113,9 @@ void hash_table_remove(BasicHashTable *ht, char *key)
     free(ht->storage[hash_func]);
     ht->storage[hash_func] = NULL;
   }
+
+  free(ht->storage[hash_func]);
+  ht->storage[hash_func] = NULL;
 }
 
 /****
@@ -157,13 +161,13 @@ int main(void)
 
   printf("%s", hash_table_retrieve(ht, "line"));
 
-  // hash_table_remove(ht, "line");
+  hash_table_remove(ht, "line");
 
-  // if (hash_table_retrieve(ht, "line") == NULL) {
-  //   printf("...gone tomorrow. (success)\n");
-  // } else {
-  //   fprintf(stderr, "ERROR: STILL HERE\n");
-  // }
+  if (hash_table_retrieve(ht, "line") == NULL) {
+    printf("...gone tomorrow. (success)\n");
+  } else {
+    fprintf(stderr, "ERROR: STILL HERE\n");
+  }
 
   destroy_hash_table(ht);
 

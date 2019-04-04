@@ -91,6 +91,7 @@ HashTable *create_hash_table(int capacity)
 void hash_table_insert(HashTable *ht, char *key, char *value)
 {
   int hash_func = hash(key, ht->capacity);
+
   if (ht->storage[hash_func] != NULL)
   {
     if (ht->storage[hash_func]->next == NULL)
@@ -98,10 +99,12 @@ void hash_table_insert(HashTable *ht, char *key, char *value)
       ht->storage[hash_func]->next = create_pair(key, value);
     }
   }
+
   if (ht->storage[hash_func] == NULL)
   {
     ht->storage[hash_func] = create_pair(key, value);
   }
+
 }
 
 /*
