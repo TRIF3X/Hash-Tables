@@ -130,7 +130,24 @@ void hash_table_remove(HashTable *ht, char *key)
  */
 char *hash_table_retrieve(HashTable *ht, char *key)
 {
-  return NULL;
+  int hash_func = hash(key, ht->capacity);
+  if (ht->storage[hash_func])
+  {
+    LinkedPair *new_pair = ht->storage[hash_func];
+
+    while(1) 
+    {
+      if (strcmp(new_pair->key, key) == 0 )
+      {
+        return new_pair->value;
+      }
+      new_pair = new_pair->next;
+    }
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 /*
@@ -172,13 +189,13 @@ int main(void)
   printf("%s", hash_table_retrieve(ht, "line_2"));
   printf("%s", hash_table_retrieve(ht, "line_3"));
 
-  int old_capacity = ht->capacity;
-  ht = hash_table_resize(ht);
-  int new_capacity = ht->capacity;
+  // int old_capacity = ht->capacity;
+  // ht = hash_table_resize(ht);
+  // int new_capacity = ht->capacity;
 
-  printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity);
+  // printf("\nResizing hash table from %d to %d.\n", old_capacity, new_capacity);
 
-  destroy_hash_table(ht);
+  // destroy_hash_table(ht);
 
   return 0;
 }
