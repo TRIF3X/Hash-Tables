@@ -73,8 +73,9 @@ unsigned int hash(char *str, int max)
  */
 HashTable *create_hash_table(int capacity)
 {
-  HashTable *ht;
-
+  HashTable *ht = calloc(1, sizeof(HashTable));
+  ht->capacity = capacity;
+  ht->storage = calloc(capacity, sizeof(char *));
   return ht;
 }
 
@@ -89,7 +90,18 @@ HashTable *create_hash_table(int capacity)
  */
 void hash_table_insert(HashTable *ht, char *key, char *value)
 {
-
+  int hash_func = hash(key, ht->capacity);
+  if (ht->storage[hash_func] != NULL)
+  {
+    if (ht->storage[hash_func]->next == NULL)
+    {
+      ht->storage[hash_func]->next = create_pair(key, value);
+    }
+  }
+  if (ht->storage[hash_func] == NULL)
+  {
+    ht->storage[hash_func] = create_pair(key, value);
+  }
 }
 
 /*
